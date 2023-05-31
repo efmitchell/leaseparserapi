@@ -1,0 +1,16 @@
+@startuml
+participant Client
+participant LeaseParserAPI
+participant EYEEXAMAPI
+
+Client -> LeaseParserAPI: GET /api/parseData
+alt if data not in cache
+    LeaseParserAPI -> EYEEXAMAPI: GET /schedule
+    EYEEXAMAPI --> LeaseParserAPI: Returns raw schedule data
+    LeaseParserAPI -> LeaseParserAPI: Parse raw data to expected format
+    LeaseParserAPI -> LeaseParserAPI: Cache parsed data
+    LeaseParserAPI --> Client: Returns parsed data
+else if data in cache
+    LeaseParserAPI --> Client: Returns cached data
+end
+@enduml
